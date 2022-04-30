@@ -13,10 +13,11 @@
 		{% block javascripts %}{% endblock %}
 	</head>
 	<body>
+    {% include "layout/header.html.twig" %}
 		<h2>Ajouter un(e) Argonaute</h2>
 		<form class="new-member-form">
 			<label for="name">Nom de l&apos;Argonaute</label>
-			<input id="name" name="name" type="text" placeholder="Charalampos"/>
+			<input id="name" name="name" type="text" placeholder="Charalampos" value="{{membre.membre}}"/>
 			<button type="submit">Envoyer</button>
 		</form>
 
@@ -30,6 +31,8 @@
 				<div class="member-item">{{membre.membre}}</div>
 			{% endfor %}
 		</section>
+
+        {% include "layout/footer.html.twig" %}
 		{% block body %}{% endblock %}
 	</body>
 </html>
