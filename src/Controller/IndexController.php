@@ -30,17 +30,18 @@ class IndexController extends AbstractController
     public function createPersonnage(ManagerRegistry $managerRegistry, Request $request):Response
     {
         $entityManager = $managerRegistry->getManager();
-        //Une fois que nous avons notre Entity Manager, nous créons une instance de Tag et nous la lions à un formulaire externalisé de type TagType
+        //On instancie notre nouvel objet
         $membre = new Personnage;
+        //on crée notre formulaire qui aura dans ces champs les propriétes de PersonnageType
         $membreForm = $this->createForm(PersonnageType::class, $membre);
-        //Nous appliquons la Request sur notre formulaire TagType, et si ce dernier est validé, nous le persistons au sein de notre base de données
         $membreForm->handleRequest($request);
+        //Si le formulaire est envoyé et est valide on retourne à la page d'accueuil
         if($membreForm->isSubmitted() && $membreForm->isValid()){
-            //Condition supplémentaire: on ne persiste que si l'affirmation que $title ET $text sont tous les deux null est INVALIDE
             $entityManager->persist($membre);
             $entityManager->flush();
+            $this->redirectToRoute('app_index');
         }
-        //Si le formulaire n'est pas rempli ou valide, nous transmettons une page web présentant notre formulaire à l'Utilisateur
+        //Si le formulaire n'est pas rempli ou invalide, nous transmettons une page web présentant notre formulaire à l'Utilisateur
         return $this->render('index/dataform.html.twig',[
             'formName' => "Ajout de nouveaux membres",
             'dataForm' => $membreForm->createView(),
