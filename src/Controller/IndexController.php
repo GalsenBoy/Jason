@@ -14,9 +14,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'app_index')]
-    public function index(ManagerRegistry $managerRegistry, Request $request): Response
+    public function index(ManagerRegistry $managerRegistry): Response
     {
          //Pour dialoguer avec notre base de données et envoyer des éléments, nous avons besoin de l'Entity Manager
+        $entityManager = $managerRegistry->getManager();
+        $membreRepository = $entityManager->getRepository(Personnage::class);
+        $membre = $membreRepository->findAll();
+        return $this->render('index/index.html.twig', [
+            'controller_name' => 'IndexController',
+            'membre' => $membre,
+        ]);
+    }
+
+    #[Route('/personnage',name:'app_perso')]
+    public function createPersonnage(ManagerRegistry $managerRegistry, Request $request):Response
+    {
         $entityManager = $managerRegistry->getManager();
         //Une fois que nous avons notre Entity Manager, nous créons une instance de Tag et nous la lions à un formulaire externalisé de type TagType
         $membre = new Personnage;
@@ -33,9 +45,6 @@ class IndexController extends AbstractController
             'formName' => "Ajout de nouveaux membres",
             'dataForm' => $membreForm->createView(),
             'membre' => $membre,
-        ]);
-        return $this->render('index/index.html.twig', [
-            'controller_name' => 'IndexController',
         ]);
     }
 }
